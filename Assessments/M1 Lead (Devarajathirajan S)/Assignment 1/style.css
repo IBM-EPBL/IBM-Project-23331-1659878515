@@ -1,0 +1,85 @@
+*{
+    margin : 0px;
+}
+.title_text{
+    color: white;
+    font-size: 32px;
+}
+.medium_text{
+    color: white;
+    font-size: 18px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+nav{
+    margin: 0px;
+    display: grid;
+    grid-template-columns: 40% 60%;
+    background-color: rgba(56, 165, 255, 0.938);
+}
+#profile{
+    grid-column-start: 1;
+    grid-column-end: 2;
+    margin: 100px;
+    margin-bottom: 20px;
+    transform: translateY(80px);
+}
+nav div{
+    grid-column-start: 2;
+    grid-column-end: 3;
+    align-self: center;
+}
+nav bg{
+    height: 100%;
+    width: 100%;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    background-color: aqua;
+}
+section{
+    margin-left: 80px;
+    margin-right: 80px;
+
+}
+.section_title{
+    font-size: 24px;
+    margin-top: 100px;
+}
+#details{
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+#personal_details{
+    display: grid;
+    grid-template-columns: 30% 70%;
+    margin-left: 200px;
+}
+#personal_details p{
+    margin-top: 25px;
+}
+.progress{
+    background-color: rgba(56, 165, 255, 0.938);
+    height: 10px;
+}
+#skills{
+    display: grid;
+    grid-template-columns: 33% 34% 33%;
+}
+.skill{
+    margin : 25px;
+}
+.progress_bg{
+    width: 100%;
+    background-color: rgba(95, 95, 95, 0.218);
+    margin-top: 25px;
+}
+#about_me{
+    font-size: 20px;
+    margin-top: 10px;
+    margin-left: 25px;
+}
+a{
+    text-decoration: none;
+}
