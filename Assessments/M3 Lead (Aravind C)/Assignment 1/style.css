@@ -1,0 +1,194 @@
+html{
+    font-size: 100%;
+    box-sizing: border-box;
+}
+
+*,*::after,*::before{
+    box-sizing: inherit;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+.hero{
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    row-gap: 14px;
+    align-items: center;
+    justify-content: center;
+}
+.hero::after{
+    content: "";
+    position: absolute;
+    background-color: #000000;
+    background-size: cover;
+    opacity: 0.5;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+}
+.hero::before{
+    content: "";
+    position: absolute;
+    background-image: url("./assets/hero.jpg");
+    background-color: #000000;
+    background-size: cover;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity:0.75;
+}
+.hero_intro{
+    position: relative;
+    text-align: center;
+    z-index: 1;
+}
+.name,.skills_intro{
+    color: #ffffff;  
+    margin: 0;
+}
+.name{
+    font-size: 30px;
+    margin-bottom: 6px;
+    letter-spacing:2px;
+}
+.skills_intro{
+    font-size: 18px;
+    font-weight: 600;
+}
+.profile-pic{
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    margin-bottom: 25px;
+}
+.dwn-cv{
+    padding: 12px;
+    border: none;
+    font-size: 14px;
+    border-radius: 25px;
+    margin-top: 25px;
+    background-color: #BD486D;
+    color: white;
+    cursor: pointer;
+}
+
+.social-logos{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+    column-gap: 16px;
+}
+.social-logos  img{
+    width: 45px;
+    height: 45px;
+}
+
+.about{
+    display: flex;
+    column-gap: 75px;
+    justify-content: center;
+    margin: 30px 60px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    padding: 24px;
+}
+
+.self-intro{
+    flex: 1;
+    margin-right: 35px;
+    line-height: 24px;
+    text-align: justify;
+}
+.basic-info{
+    flex: 1;
+}
+.info-table{
+    display: flex;
+    column-gap: 30px;
+}
+.info-key p{
+    font-weight: 600;
+}
+.info-key p:not(:last-child),.info-value p:not(:last-child){
+    margin-bottom: 20px;
+}
+.professional-skills-wrapper{
+    margin-top:60px;
+}
+
+.professional-skills{
+    display: grid;
+    grid-template-columns: auto auto;
+    margin: 30px 60px;
+    padding: 24px;
+    box-shadow: rgb(0 0 0 / 35%) 0px 5px 15px;
+    gap: 50px;
+}
+
+.professional-skills-wrapper h2{
+    text-align: center;
+}
+
+.skill-container{
+    display: grid;
+    grid-template-areas: "name percentage"
+                         "progress progress";
+    grid-template-columns: auto auto;
+    color: #BD486D;
+}
+
+.skill-name{
+    grid-area: name;
+}
+
+.skill-percentage{
+    grid-area: percentage;
+    justify-self: end;
+}
+
+.skill-progress{
+    height: 5px;
+    width: 100%;
+    background-color: #FFB6C5;
+    grid-area: progress;
+    position: relative;
+}
+.skill-progress-percent{
+    height: 5px;
+    position: absolute;
+    margin: 0;
+    background-color: #BD486D;
+}
+
+.professional-skills .skills-col:first-child .skill-container:nth-child(1) .skill-progress .skill-progress-percent{
+    width: 80%;
+}
+
+.professional-skills .skills-col:first-child .skill-container:nth-child(2) .skill-progress .skill-progress-percent{
+    width: 80%;
+}
+
+.professional-skills .skills-col:first-child .skill-container:nth-child(3) .skill-progress .skill-progress-percent{
+    width: 70%;
+}
+
+.professional-skills .skills-col:nth-child(2) .skill-container:nth-child(1) .skill-progress .skill-progress-percent{
+    width: 70%;
+}
+
+.professional-skills .skills-col:nth-child(5) .skill-container:nth-child(5) .skill-progress .skill-progress-percent{
+    width: 50%;
+}
+
+.professional-skills .skills-col:nth-child(5) .skill-container:nth-child(5) .skill-progress .skill-progress-percent{
+    width: 50%;
+}
