@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+    {% block head %}
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Landing Page Design Using HTML & CSS</title>
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+.container {
+    height: 100vh;
+    width: 100%;
+    background-image: url(/static/back.jpg);
+    background-position: center;
+    background-size: cover;
+    padding-right: 3%;
+    padding-left: 5%;
+    box-sizing: border-box;
+    position: relative;
+}
+.header {
+    width: 100%;
+    height: 15vh;
+    margin: auto;
+    display: flex;
+    align-items: center;
+}
+.logo {
+    width: 80px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+nav {
+    flex: 1;
+    padding-left: 450px;
+}
+nav ul li {
+    display: inline-block;
+    list-style: none;
+    margin: 0 15px;
+}
+nav ul li a {
+    text-decoration: none;
+    color: black;
+    font-family: 'Poppins', sans-serif;
+    text-transform: uppercase;
+    font-size: 15px;
+    font-weight: 600;
+}
+#btn1 {
+    text-transform: uppercase;
+    background: linear-gradient(to bottom, #378de5 3%, #48789b 50%);
+    border-radius: 30px;
+    border: 1px solid #5e97d1;
+    cursor: pointer;
+    color: black;
+    font-family: 'Poppins', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    padding: 12px 20px;
+    margin: 10px;
+    text-decoration: none;
+    box-shadow: 1px 4px 12px rgba(94,28,68,.15);
+    text-shadow: 0px 1px 0px #528ecc;
+}
+#btn2 {
+    text-transform: uppercase;
+    background: linear-gradient(to bottom, #339a96 2%, #fff 100%);
+    border-radius: 30px;
+    border: 1px solid #cbcbcb;
+    cursor: pointer;
+    color: black;
+    font-family: 'Poppins', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    padding: 12px 20px;
+    margin: 10px;
+    text-decoration: none;
+    box-shadow: 1px 4px 12px rgba(94,28,68,.15);
+    text-shadow: 0px 1px 0px #cbcbcb;
+}
+.btn:hover {
+    box-shadow: 3px 8px 22px rgba(94,28,68,.15);
+    transform: scale(1.1);
+    transition: .2s ease-in-out;
+}
+.content {
+    position: relative;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+.content .text {
+    position: relative;
+    max-width: 600px;
+}
+.content .text h1 {
+    font-family: 'Poppins', sans-serif;
+    text-transform: uppercase;
+    font-weight: 800;
+    margin-top: 80px;
+    line-height: 1.5em;
+    letter-spacing: .1em;
+    font-size: 40px;
+    color: black;
+}
+.content .text h1 span {
+    font-size: 50px;
+}
+.content .text p {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    margin-top: 40px;
+    color: black;
+ }
+.btn3 {
+    background: linear-gradient(to bottom, #364b9e 2%, #fff 100%);
+    margin-top: 60px;
+    margin-left: 140px;
+    padding: 15px 30px;
+    text-align: center;
+    transition: .5s;
+    border: none;
+    outline: none;
+    text-transform: uppercase;
+    color: black;
+    font-size: 20px;
+    font-weight: 700;
+    border-radius: 30px;
+    box-shadow: 1px 4px 12px rgba(94,28,68,.15);
+}
+.pepsi {
+    display: flex;
+    height: 100%;
+    position: absolute;
+    width: 600px;
+    margin-top: 80px;
+    padding-left: 440px;
+    justify-content: flex-end;
+}
+    </style>
+    {% endblock %}
+
+    
+{% block body %}
+    <div class="container">
+        <div class="header">
+            <img src="/static/logo.png" class="logo">
+            <nav>
+                <ul>
+                    <li><a href="">Home</a></li>
+                    <li><a href="">Products</a></li>
+                    <li><a href="/deleteuser">DELETE USER</a></li>
+                    <li><a href="/adduser">ADD USER</a></li>
+                    <li><a href="/list">List</a></li>
+                </ul>
+            </nav>
+            <button class="btn" id="btn1">Log In</button>
+            <button class="btn" id="btn2">Sign Up</button>
+        </div>
+        <div class="content">
+            <div class="text">
+            <h1>Be Young, Have Fun, <br> <span>Drink Pepsi</span></h1>
+            <p>Pepsi is a carbonated soft drink manufactured by PepsiCo. <br>Originally created and developed in 1893 by Caleb Bradham <br>and introduced as Brad's Drink, it was renamed as Pepsi-Cola in 1898, and then shortened to Pepsi in 1961.
+            </p>
+            <button class="btn3">Buy Now</button>
+           </div>
+        <div class="pepsi">
+        <!-- <img src="/back.jpg" alt=""> -->
+        </div>
+       </div>
+   </div>
+   {% endblock %} 

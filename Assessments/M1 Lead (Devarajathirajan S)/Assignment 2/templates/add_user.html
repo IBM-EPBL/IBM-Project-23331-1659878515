@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>User Registration</title>
+    <style>
+        body{
+            margin-left: 45%;
+            scale: 1.3;
+            margin-top: 10%;
+        }
+    </style>
+</head>
+<body>  
+    <a href="/home">Home</a>&emsp;
+    <a href="/deleteuser">Delete User</a>&emsp;
+    <a href="/adduser">Add user</a>&emsp;
+    <a href="/list">LIST</a><br><br>
+    
+    <form action="{{url_for('addrec')}}" method="post">
+        Name: <br>
+        <input type="text" name="name"><br><br>
+        Address : <br>
+        <input type="text" name="address" id=""><br><br>
+        City : <br>
+        <input type="text" name="city" id=""><br><br>
+        Pincode : <br>
+        <input type="number" name="pin" maxlength="6"> <br><br>
+        <input type="submit">       <input type="reset" >
+
+    </form>
+</body>
+</html>

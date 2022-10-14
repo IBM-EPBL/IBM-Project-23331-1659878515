@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Users List</title>
+    <style>
+        th{padding: 2px 15px;            
+        }
+        body{
+            scale: 1.3;
+            margin: 5% 20%;
+        }
+    </style>
+</head>
+<body>
+    
+    <a href="/home">Home</a>&emsp;
+    <a href="/adduser">Add user</a>&emsp;
+    <a href="/deleteuser">Delete User</a>&emsp;
+    <a href="/list">LIST</a><br><br>
+
+    {{ msg }}
+    <table border="4px" >
+        <thead>
+            <th>Name</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>Pincode</th>
+        </thead>
+
+        {% for row in user %}
+
+        <tr>
+            <td>{{row["name"]}}</td>
+            <td>{{row["address"]}}</td>
+            <td>{{row["city"]}}</td>
+            <td>{{row["pin"]}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
