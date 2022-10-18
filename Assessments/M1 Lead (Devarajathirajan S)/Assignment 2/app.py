@@ -83,7 +83,7 @@ def list():
 
 @app.route("/about")
 def aboutPage():
-    return "about Page !!!"
+    return "<img src='static/preview.jpg'>"
 
 @app.route("/signin")
 def signinPAGE():
