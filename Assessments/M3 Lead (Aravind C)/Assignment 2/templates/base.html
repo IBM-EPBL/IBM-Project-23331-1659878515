@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {% block head %}
+    {% endblock %}
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .Navbar {
+            display: flex;
+            gap: 10px;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        .Navbar a {
+            float: left;
+            color: #f2f2f2;
+            font-size: 17px;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="Navbar">
+        <a href="/">HOME</a>
+        <a href="/signin">SIGN-IN</a>
+        <a href="/signup">SIGN-UP</a>
+        <a href="#about">ABOUT</a>
+    </div>
+    <br><br>
+    {% block body %}
+    {% endblock %}
+
+
+</body>
+
+</html>

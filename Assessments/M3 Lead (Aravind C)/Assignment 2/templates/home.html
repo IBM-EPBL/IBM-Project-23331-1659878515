@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+    {% block head %}
+    <title></title>
+    <style>
+        *{
+            border: 0;
+            margin: 0;
+        }
+        body{
+            background-image: url(../static/backG.jpg);
+        }
+        img{
+            height: 100px;
+            width: 100px;
+            padding-left: 30px ;
+        }
+        .home{
+           
+            width: auto;
+        }
+        .logo{
+            display: flex;
+            
+        }
+        .logo h1{
+            align-items: center;
+            padding: 15px;
+            font-size: 60px;
+            
+        }
+        .pur{
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            text-align: center;
+            align-items: center;
+            margin: 10% 30%;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+        .pur button{
+            background-color: green;
+            color: #fff;
+            height: 50px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+    {% endblock %}
+    {% block body %}
+    <div class="home">
+        <div class="logo">
+            <img src="../static/logo.jpg" alt="logo">
+            <h1>Sports</h1>
+        </div> 
+        <div class="pur">
+            <h1>ALL SPORTS PRODUCTS IN ONE SHOP</h1>
+            <p>Popular soccer jerseys, shoes, football kits are available at low cost.
+                 Specific players printed name and number jersey's are available.
+                    One Stop for all your sports needs. Only One Condition Here: Lionel Messi is the one and only the Greatest of all Time. </p>
+            <button>PURCHASE NOW</button>
+        </div>
+    </div>
+
+    {% endblock %} 
