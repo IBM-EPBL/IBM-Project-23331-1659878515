@@ -1,0 +1,68 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASSIGNMENT-3</title>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header flex justify-between align-center padding">
+        <div><b>Barathkumar S</b></div>
+        <div><b>61771921006</b></div>
+        <div><b>Assignment 3</b></div>
+    </div>
+    <div class="wrap flex justify-between align-center padding"></div>
+    <img src="https://plasmadonor5.s3.jp-tok.cloud-object-storage.appdomain.cloud/banner1.jpg" alt="img3">
+    <img src="https://plasmadonor5.s3.jp-tok.cloud-object-storage.appdomain.cloud/banner2.jpg" alt="img4">
+    <img src="https://plasmadonor5.s3.jp-tok.cloud-object-storage.appdomain.cloud/banner3.jpg" alt="img1">
+    <img src="https://plasmadonor5.s3.jp-tok.cloud-object-storage.appdomain.cloud/ss3.png" alt="img2">
+    <img src="https://plasmadonor5.s3.jp-tok.cloud-object-storage.appdomain.cloud/ss4.png" alt="img5">
+    <script>
+      window.watsonAssistantChatOptions = {
+        integrationID: "97686490-3e72-427c-87f4-896833b04329", // The ID of this integration.
+        region: "jp-tok", // The region your integration is hosted in.
+        serviceInstanceID: "15e1d621-fb36-46b8-b4ca-51c1bfc104ff", // The ID of your service instance.
+        onLoad: function(instance) { instance.render(); }
+      };
+      setTimeout(function(){
+        const t=document.createElement('script');
+        t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+        document.head.appendChild(t);
+      });
+    </script>
+</body>
+</html>
+
+
+
+
+
+<!doctype html>
+<html>
+   <head>
+      <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+   </head>
+   <body>
+      {% for row in files %}
+         <div style="border: 1px solid #EFEFEF;margin:10px;">
+            <h3>Filename : {{row}} </h3>
+            <img src="https://powernm-images.s3.jp-tok.cloud-object-storage.appdomain.cloud/{{row}}" width="150px"></td>
+         </div>
+      {% endfor %}
+      <script>
+         window.watsonAssistantChatOptions = {
+           integrationID: "1b08aaa8-1915-4887-bd88-22df9412418f", // The ID of this integration.
+           region: "jp-tok", // The region your integration is hosted in.
+           serviceInstanceID: "b4f4b798-3e7c-4d26-9e8a-af08f5f4aa6c", // The ID of your service instance.
+           onLoad: function(instance) { instance.render(); }
+         };
+         setTimeout(function(){
+           const t=document.createElement('script');
+           t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+           document.head.appendChild(t);
+         });
+       </script>
+   </body>
+</html>
