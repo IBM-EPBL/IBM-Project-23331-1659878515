@@ -1,5 +1,9 @@
 from flask import Flask, render_template, redirect, url_for, request, session, flash
 import ibm_db
+import sendgrid
+import os
+from dotenv import load_dotenv
+from sendgrid.helpers.mail import Mail, Email, To, Content
 
 app = Flask(__name__)
 #secret key required to maintain unique user sessions
@@ -8,6 +12,9 @@ app.secret_key = 'f39c244d6c896864abe3310b839091799fed56007a438d637baf526007609f
 #establish connection with IBM Db2 Database
 connection = ibm_db.connect("DATABASE=bludb;HOSTNAME=815fa4db-dc03-4c70-869a-a9cc13f33084.bs2io90l08kqb1od8lcg.databases.appdomain.cloud;PORT=30367;SECURITY=SSL;SSLServerCertificate=DigiCertGlobalRootCA.crt;UID=fzx82079;PWD=Gemfhl3b2DRTeUqB;", "", "")
 
+load_dotenv()   #load keys from .env
+sg = sendgrid.SendGridAPIClient(api_key = os.environ.get('SENDGRID_API_KEY'))   #set SendGrid API Key
+from_email = Email("getplasmaproject@gmail.com")     #the address that sends emails to the users
 
 
 
@@ -66,7 +73,19 @@ def regform():
         ibm_db.bind_param(pstmt, 2, pwd)
         ibm_db.bind_param(pstmt, 3, uname)
         ibm_db.execute(pstmt)
+
+        to_email = To(uid)   #set user as recipient for confirmation email
+        subject = "Welcome to GetPlasma"
+        content = Content("text/html", "<p>Hello " + uname + ",</p><p>Thank you for registering to the GetPlasma Application!</p><p>If this wasn't you, then immediately report to our <a href=\"mailto:getplasmaproject@gmail.com\">admin</a> or just reply to this email.</p>")
+
+        email = Mail(from_email, to_email, subject, content) #construct email format
+        email_json = email.get()    #get JSON-ready representation of the mail object
+
+        response = sg.client.mail.send.post(request_body = email_json)  #send email by invoking an HTTP/POST request to /mail/send
+
+
         flash('Registration Successful! Sign in using the registered credentials to continue')
+
 
     return redirect(url_for('signin'))  #ask users to sign in after registration
 
