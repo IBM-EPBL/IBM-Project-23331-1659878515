@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+<title>GetPlasma - register</title>
+{% endblock %}
+
+
+{% block body %}
+
+<section class="vh-200 login-bg">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col col-xl-10">
+                <div class="card rounded-rem">
+                    <div class="row g-0 align-items-center">
+                        <div class="col-md-6 col-lg-5 d-none d-md-block">
+                            <img src="https://img.freepik.com/free-vector/blood-donor-nurse_74855-6262.jpg"
+                                class="img-fluid rounded-rem" />
+                        </div>
+                        <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                            <div class="card-body p-4 p-lg-5 text-black">
+                                <form action="{{url_for('regform')}}" method="POST">
+                                    <div class="d-flex align-items-center mb-3 pb-1">
+                                        <i class="fa-solid fa-user-plus fa-2x me-3" style="color: #777;"></i>
+                                        <span class="h2 fw-bold mb-0">Register</span>
+                                    </div>
+
+
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="dtype">
+                                            <i class="fa-solid fa-user-group me-3"></i>Login as</label>
+                                        <select class="form-select form-control-lg" name="dtype" aria-label="Select ID Type" required>
+                                            <option value="donor" selected>Donor</option>
+                                            <option value="patient">Patient</option>
+                                        </select>
+                                    </div>
+
+
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="uname">
+                                            <i class="fa-solid fa-user-tag me-3"></i>Username</label>
+                                        <input type="text" name="uname" placeholder="Full Name"
+                                            class="form-control form-control-md" required />
+                                    </div>
+
+
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="uid">
+                                            <i class="fa-solid fa-address-card me-3"></i>Email/Phone Number</label>
+                                        <div class="input-group">
+                                            <select class="form-select-sm" name="utype" aria-label="Select ID Type" required>
+                                                <option value="mail" selected>&#9993;</option>
+                                                <option value="phone">&#9742;</option>
+                                            </select>
+                                            <input type="email" name="uid" class="form-control form-control-md"
+                                                aria-label="ID Input" placeholder="Email address" required />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="pwd">
+                                            <i class="fa-solid fa-key me-3"></i>Password</label>
+                                        <input type="password" name="pwd" placeholder="Password"
+                                            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                            title="Password must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                                            class="form-control form-control-md" required />
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="cpwd">
+                                            <i class="fa-solid fa-key me-3"></i>Confirm Password</label>
+                                        <input type="password" name="cpwd" placeholder="Confirm Password"
+                                            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                            title="Password must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                                            class="form-control form-control-md" onkeyup="confirm_password()"
+                                            required />
+                                    </div>
+
+                                    <div class="pt-1 mb-5">
+                                        <button class="btn btn-dark btn-lg btn-block btn-rounded" id="submit"
+                                            type="submit">
+                                            Register
+                                        </button>
+                                    </div>
+
+
+                                    <p class="mt-5 mb-5 pb-lg-2" style="color: #393f81;">Already have an account? <a
+                                            href="/signin" style="color: #393f81;">Sign in here</a></p>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function confirm_password() {
+        let pwd = document.querySelector("input[name='pwd']"),
+            cpwd = document.querySelector("input[name='cpwd']");
+
+        if (pwd.value != cpwd.value) {
+            cpwd.style.color = '#e57373';
+            document.getElementById('submit').setAttribute('disabled', 'true');
+            return;
+        }
+
+        document.getElementById('submit').removeAttribute('disabled');
+        cpwd.style.color = '#000';
+    }
+
+
+    function changeIdType() {
+        let idType = document.querySelector('input[name="uid"]');
+        console.log(idType);
+        if(this.value == 'mail'){
+            idType.type = 'email';
+            idType.setAttribute('placeholder', 'Email address');
+            idType.removeAttribute('pattern');
+        }
+        else{
+            idType.type = 'tel';
+            idType.setAttribute('pattern', '[0-9]{10}')
+            idType.setAttribute('placeholder', 'Phone Number');
+        }
+    }
+
+    document.querySelector('select[name="utype"]').addEventListener('change', changeIdType);
+
+</script>
+
+{% endblock %}
