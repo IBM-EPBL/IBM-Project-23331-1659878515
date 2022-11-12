@@ -1,5 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request, session, flash, Markup
 import ibm_db
+import ibm_boto3
+from ibm_botocore.client import Config, ClientError
 import sendgrid #Email API
 import os
 from dotenv import load_dotenv  #API that exposes environmental variables into the program
@@ -7,13 +9,14 @@ from sendgrid.helpers.mail import Mail, Email, To, Content  #Additional Email He
 from twilio.rest import Client  #SMS/WhatsApp API
 
 app = Flask(__name__)
+
+load_dotenv()   #load keys from .env
+
 #secret key required to maintain unique user sessions
-app.secret_key = 'f39c244d6c896864abe3310b839091799fed56007a438d637baf526007609fe0'
+app.secret_key = os.environ.get('APP_KEY')
 
 #establish connection with IBM Db2 Database
 connection = ibm_db.connect("DATABASE=bludb;HOSTNAME=815fa4db-dc03-4c70-869a-a9cc13f33084.bs2io90l08kqb1od8lcg.databases.appdomain.cloud;PORT=30367;SECURITY=SSL;SSLServerCertificate=DigiCertGlobalRootCA.crt;UID=fzx82079;PWD=Gemfhl3b2DRTeUqB;", "", "")
-
-load_dotenv()   #load keys from .env
 
 #Email Prerequisites
 sg = sendgrid.SendGridAPIClient(api_key = os.environ.get('SENDGRID_API_KEY'))   #set SendGrid API Key
@@ -26,20 +29,31 @@ sender_phone = os.environ.get('TWILIO_WHATSAPP')   #the number from which messag
 client = Client(account, token)
 
 
+#Object Storage Prerequisites
+cos = ibm_boto3.resource("s3",
+        ibm_api_key_id = os.environ.get('COS_API_KEY_ID'),
+        ibm_service_instance_id = os.environ.get('COS_INSTANCE_CRN'),
+        config = Config(signature_version="oauth"),
+        endpoint_url = os.environ.get('COS_ENDPOINT')
+)
+
+bucket_name = 'getplasma-pvt'
+
+
 @app.route('/')
 @app.route('/dashboard')
 def dashboard():
-    if 'username' not in session:
+    if not session:
         return redirect(url_for('signin'))  #ask user to sign in if not done already
 
-    return render_template('dashboard.html', pred=session['username'])  #go to homepage if signed in
+    return render_template('dashboard.html')  #go to homepage if signed in
 
 
 
 
 @app.route('/signout')
 def signout():
-    session.pop('username', None)   #remove user session upon signing out
+    session.clear()   #remove user session upon signing out
     return redirect('/')
 
 
@@ -47,7 +61,7 @@ def signout():
 
 @app.route('/register')
 def register():
-    if 'username' in session:   #inform user if they're already signed in the same session
+    if session:   #inform user if they're already signed in the same session
         flash('You are already signed in! Sign out to login with a different account')
         return redirect(url_for('dashboard'))
 
@@ -96,7 +110,7 @@ def regform():
             response = sg.client.mail.send.post(request_body = email_json)  #send email by invoking an HTTP/POST request to /mail/send
         
         else:   #if user registered with phone number
-            #ask users to register for WhatsApp Alerts
+           
             flash(
                 Markup(
                     '''<div class="d-flex flex-column">
@@ -119,7 +133,7 @@ def regform():
 
 @app.route('/signin')
 def signin():
-    if 'username' in session:   #inform user if they're already signed in the same session
+    if session:   #inform user if they're already signed in the same session
         flash('You are already signed in! Sign out to login with a different account')
         return redirect(url_for('dashboard'))
     return render_template('signin.html')   #take user to the sign in page
@@ -133,7 +147,7 @@ def signinform():
     pwd = request.form['pwd']
     dtype = request.form['dtype']
 
-    sql = 'SELECT uname from ' + dtype + ' WHERE uid=? AND pwd=?' #check user credentials in the database
+    sql = 'SELECT * from ' + dtype + ' WHERE uid=? AND pwd=?' #check user credentials in the database
     pstmt = ibm_db.prepare(connection, sql)
     ibm_db.bind_param(pstmt, 1, uid)
     ibm_db.bind_param(pstmt, 2, pwd)
@@ -142,10 +156,85 @@ def signinform():
     acc = ibm_db.fetch_assoc(pstmt)
     
     if acc: #if the user is already registered to the application
-        session['username'] = acc['UNAME']
+        for keys, vals in acc.items():
+            session[keys] = vals
+        session['DTYPE'] = dtype
+        session['UTYPE'] = request.form['utype'] #Email/Phone Number
         flash('Signed in successfully!')
         return redirect(url_for('dashboard'))
         
     else:   #warn upon entering incorrect credentials
         flash('Incorrect credentials. Please try again!')
         return render_template('signin.html')
+
+
+@app.route('/medform', methods=['POST'])
+def medform():
+    #get user details from the registration form
+    uname = request.form['uname']
+    uid = request.form['uid']       #Selected contact id type
+    uage = request.form['uage']
+    gender = request.form['gender']
+    weight = request.form['weight']
+    bgroup = request.form['bgroup']
+    rh = request.form['rh']
+    dtype = session['DTYPE']  #donor/patient user type
+    if dtype == 'Donor':
+        medfile = request.files['medfile']
+    addr = request.form['addr']
+    city = request.form['city']
+    st = request.form['st']
+    zip = request.form['zip']
+
+
+
+    try:
+        part_size = 1024 * 1024 * 5
+        file_threshold = 1024 * 1024 * 15
+        
+        transfer_config = ibm_boto3.s3.transfer.TransferConfig(
+            multipart_threshold = file_threshold,
+            multipart_chunksize = part_size
+        )
+
+        cos.Object(bucket_name, "MedCert_"+uid).upload_fileobj(
+            Fileobj = medfile,
+            Config = transfer_config
+        )
+
+        flash(f"MedCert_{uid}File uploaded successfully")
+        medfile_url = "https://getplasma-pvt.s3.jp-tok.cloud-object-storage.appdomain.cloud/MedCert_"+uid
+
+    except ClientError as e:
+         flash("Error occured while trying to upload medical certificate")
+    
+    except Exception as e:
+        flash("Error occured while trying to upload medical certificate")
+
+
+
+
+
+    sql = f"UPDATE {dtype} SET uname=?, uage=?, gender=?, weight=?, bgroup=?, rh=?, {'medfile=?, ' if dtype == 'Donor' else ''}addr=?, city=?, st=?, zip=? WHERE uid=?"
+    pstmt = ibm_db.prepare(connection, sql)
+    if dtype=='Donor':
+        param = uname, uage, gender, weight, bgroup, rh, medfile_url, addr, city, st, zip, uid
+    else:
+        param = uname, uage, gender, weight, bgroup, rh, addr, city, st, zip, uid
+    ibm_db.execute(pstmt, param)
+
+    sql = 'SELECT * from ' + dtype + ' WHERE uid=?'   #check if user is already registered
+    pstmt = ibm_db.prepare(connection, sql)
+    ibm_db.bind_param(pstmt, 1, uid)
+    ibm_db.execute(pstmt)
+
+    res = ibm_db.fetch_assoc(pstmt)
+
+    if res:
+        flash('Profile updated successfully')
+        for keys, vals in res.items():
+            session[keys] = vals
+    else:
+        flash('Error occured while trying to update the profile')
+
+    return redirect(url_for('dashboard'))

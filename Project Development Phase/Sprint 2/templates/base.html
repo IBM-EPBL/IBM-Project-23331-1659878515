@@ -16,10 +16,10 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg sticky-top navbar-light glass-white">
         <div class="container-fluid">
             <a class="navbar-brand fw-bold" href="/">
-                GetPlasma
+                <i class="fa-solid fa-hand-holding-droplet text-custom-accent"></i> GetPlasma
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,28 +27,29 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    {% if session['username'] %}
+                    {% if session.UID %}
                         <li class="nav-item">
-                            <a class="nav-link" href="/" href="#">Home</a>
+                            <a class="nav-link text-custom-primary" href="/" href="#">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/signout">
+                            <a class="nav-link text-custom-primary" href="/signout">
                                 <i class="fa-solid fa-right-from-bracket"></i>
                                 Sign Out
                             </a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="/signin">Sign in</a>
+                            <a class="nav-link text-custom-primary" href="/signin">Sign in</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/register">Sign up</a>
+                            <a class="nav-link text-custom-primary" href="/register">Sign up</a>
                         </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
+    
 
     {% block body %} {% endblock %}
 
@@ -57,19 +58,18 @@
         <div class="toast-container p-3 bottom-0 start-0" id="toastPlacement">
     {% if messages %}
     {% for message in messages %}
-                <div class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast custom-primary text-white align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="d-flex">
                         <div class="toast-body">
                             {{message}}
                         </div>
-                        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                 </div>
     {% endfor %}
         </div>
     </div>  
     <script>
-        console.log('test');
         document.querySelectorAll('.toast').forEach(
             (i) => {
                 new bootstrap.Toast(i).show();
