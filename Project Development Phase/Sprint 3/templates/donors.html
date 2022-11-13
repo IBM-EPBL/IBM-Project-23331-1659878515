@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>GetPlasma - Donors</title>
+<style>
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.25em 0.6em;
+    font-size: 75%;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.75rem;
+  }
+
+  .modal-cert-container{
+    height: auto;
+  }
+
+</style>
+{% endblock %}
+
+
+{% block body %}
+<div class="modal modal-fullscreen fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalLabel">Donor's Medical Certificate</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex align-items-center justify-content-center">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<section class="vh-200 main-bg-light">
+  <div class="container pt-5">
+
+
+    <div class="mb-5 text-center">
+      <i class="fa-solid fa-hand-holding-droplet fa-2x me-3 text-custom-secondary"></i>
+      <span class="h2 fw-bold mb-0">Donors List</span>
+    </div>
+    {% set loop_len = donors|length %}
+    <div class="row">
+      {% for key, value in donors.items() %}
+      <div class="col-xl-3 col-sm-6">
+        <div class="card glass mb-4">
+          <div class="card-body">
+            <div>
+              <h5 id="uname-{{key}}" class="font-size-16 mb-1 text-dark fw-semibold">{{ value['UNAME'] }}</h5>
+              <span id="uid-{{key}}" class="badge custom-secondary-bg text-custom-secondary mb-0">{{ value['UID'] }}</span>
+            </div>
+            </form>
+            <div class="mt-4">
+              <p class="text-muted mb-4">
+                <i class="fa-solid fa-hand-holding-droplet text-custom-accent me-2"></i>
+                {{value['BGROUP']}}{{value['RH']}}
+              </p>
+              <p class="text-muted mb-4">
+                <i class="fa-solid fa-person-half-dress text-custom-accent me-2"></i>
+                {{value['GENDER']}}
+              </p>
+              <p class="text-muted mb-4">
+                <i class="fa-solid fa-weight text-custom-accent me-2"></i>
+                {{value['WEIGHT']}} kg
+              </p>
+              <p class="link text-muted mb-4">
+                <i class="fa-solid fa-notes-medical text-custom-accent me-2"></i>
+                <a href="#modal" data-id="{{value['MEDFILE']}}" data-bs-toggle="modal"
+                  class="text-muted show-medcert">View Medical Certificate</a>
+              </p>
+              <p class="text-muted mb-4">
+                <i class="fa-solid fa-map-location-dot text-custom-accent me-2"></i>
+                {{value['CITY']}}, {{value['ST']}}
+              </p>
+            </div>
+            <button type="button" id="reqbtn-{{key}}" class="btn btn-dark text-white custom-primary btn-sm w-100" >
+              <i class="fa-solid fa-message"></i> Request
+            </button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script>
+  let links = document.querySelectorAll('.show-medcert');
+  let link_list = [].slice.call(links), child;
+
+  link_list.forEach(function (item) {
+    item.addEventListener('click', function () {
+      let data_id = item.getAttribute('data-id');
+
+      document.querySelector('.modal-body').innerHTML = data_id == "None" ?
+        '<p>Medical Certificate was not provided by the donor</p>'
+        :
+        `<${data_id.includes('.pdf') ? 'iframe' : 'img'} 
+                                                             width=${data_id.includes('.pdf') ? "100%" : "auto"} class="h-100 overflow-scroll"
+                                                            src="${data_id}">
+                                                        </${data_id.includes('.pdf') ? 'iframe' : 'img'}>`;
+    })
+  });
+
+  let uname_list = [], uid_list =[];
+  for(let i=0; i<'{{loop_len}}'; i++){
+    console.log(i)
+    document.getElementById('reqbtn-'+i).addEventListener('click', function(){
+      callRequest(i);
+    })
+    uname_list.push(document.getElementById('uname-'+i));
+    uid_list.push(document.getElementById('uid-'+i));
+  }
+
+  function callRequest(i){
+    let username = uname_list[i].innerHTML, userid = uid_list[i].innerHTML;
+    const req = new XMLHttpRequest()
+    req.open('POST', `/processRequestPlasma/${JSON.stringify({"uname": username, "uid" : userid})}`);
+    req.send();
+  }
+
+
+  
+
+</script>
+{% endblock %}
+</body>
+
+</html>
