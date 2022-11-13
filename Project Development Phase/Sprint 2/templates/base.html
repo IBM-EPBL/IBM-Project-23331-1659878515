@@ -29,8 +29,15 @@
                 <ul class="navbar-nav">
                     {% if session.UID %}
                         <li class="nav-item">
-                            <a class="nav-link text-custom-primary" href="/" href="#">Home</a>
+                            <a class="nav-link text-custom-primary" href="/dashboard">Dashboard</a>
                         </li>
+
+                        {% if session.DTYPE == "Patient" %}
+                            <li class="nav-item">
+                                <a class="nav-link text-custom-primary" href="/donors">Donors</a>
+                            </li>
+                        {% endif %}
+
                         <li class="nav-item">
                             <a class="nav-link text-custom-primary" href="/signout">
                                 <i class="fa-solid fa-right-from-bracket"></i>

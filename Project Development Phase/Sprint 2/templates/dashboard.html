@@ -29,13 +29,19 @@
                         <label class="form-label" for="uid">
                             <i class="fa-solid fa-address-card me-3 text-custom-accent"></i>User ID</label>
                         <input type="text" name="uid" class="form-control form-control-md glass" required
-                            value="{{session.UID}}"/>
+                            value="{{session.UID}}" disabled/>
                     </div>
 
                     <div class="form-outline mb-4 col-md-6">
                         <label class="form-label" for="uage">
                             <i class="fa-solid fa-calendar-days me-3 text-custom-accent"></i>Age</label>
-                        <input type="number" min="18" max="65" name="uage" class="form-control form-control-md glass" placeholder="Enter Age"
+                        <input type="number"
+                            {% if session.DTYPE=="Donor" %} 
+                                min="18" max="65" 
+                            {% else %}
+                                min="0" max="120"
+                            {%endif%}
+                            name="uage" class="form-control form-control-md glass" placeholder="Enter Age"
                             required value="{{session.UAGE}}" />
                     </div>
 
@@ -55,8 +61,14 @@
                     <div class="form-outline mb-4 col-md-6">
                         <label class="form-label" for="weight">
                             <i class="fa-solid fa-address-card me-3 text-custom-accent"></i>Weight</label>
-                        <input type="number" min="45" name="weight" class="form-control form-control-md glass" required
-                            value="{{session.WEIGHT}}" />
+                        <input type="number" 
+                            {% if session.DTYPE=="Donor" %} 
+                                min="45" 
+                            {% else %}
+                                min="0"
+                            {%endif%}
+                            name="weight" class="form-control form-control-md glass" required
+                                value="{{session.WEIGHT}}" />
                     </div>
 
 
@@ -89,7 +101,9 @@
                             {% if not session.MEDFILE %}
                                 <!--medical certificate not yet uploaded-->
                             {% elif '.pdf' in session.MEDFILE %}
-                                <iframe src={{session.MEDFILE}} width="100%" height="10%"></iframe>
+                            <div class="d-flex w-100 justify-content-center col-lg-3 col-sm-12 mb-4">
+                                <iframe src="{{session.MEDFILE}}" class="shadow rounded-5 main-bg p-1 col-6"></iframe>
+                            </div>
                             {% else %}
                                 <div class="d-flex w-100 justify-content-center col-lg-3 col-sm-12 mb-4">
                                     <img src="{{session.MEDFILE}}" class="shadow rounded-5 main-bg p-1 w-50"/>
@@ -181,6 +195,10 @@
     let state_select = medform['st'], city_select = medform['city'];    //state and city dropdowns
     let selected_code, st_data;
     let def_names = ['{{session.ST}}', '{{session.CITY}}'];
+
+    state_select.addEventListener('change', function(){
+        initCity();
+    });
     
     fetch("https://api.countrystatecity.in/v1/countries/IN/states", requestOptions) //fetch list of states and union territories
         .then(response => response.json())
@@ -204,10 +222,8 @@
     }
 
 
-    state_select.addEventListener('change', initCity());
-
-
     function populate(cities) {  //populate list with the fetched states
+        
         city_select.innerHTML = '<option value="..." hidden selected>...</option>'; //initiate dropdown before filling new city values
 
         for (let i = 0; i < cities.length; i++)

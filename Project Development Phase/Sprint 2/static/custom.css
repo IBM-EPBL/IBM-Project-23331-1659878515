@@ -39,8 +39,16 @@
     background-color: var(--sec)
 }
 
+.custom-secondary-bg{
+    background-color: #f48ded65;
+}
+
 .custom-tertiary{
     background-color: var(--ter)
+}
+
+.custom-accent{
+    background-color: #E57373;
 }
 
 body{

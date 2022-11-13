@@ -61,8 +61,8 @@ def signout():
 
 @app.route('/register')
 def register():
-    if session:   #inform user if they're already signed in the same session
-        flash('You are already signed in! Sign out to login with a different account')
+    if 'UID' in session:   #inform user if they're already signed in the same session
+        flash('You are already logged in! Sign out to login with a different account')
         return redirect(url_for('dashboard'))
 
     else:
@@ -88,10 +88,10 @@ def regform():
     acc = ibm_db.fetch_assoc(pstmt)
 
     if acc:     #inform user to sign in if they have an existing account
-        flash('You are already a member. Please sign in using your registered credentials')
+        flash('You are already a registered member. Please sign in using your registered credentials')
 
     else:
-        sql = 'INSERT INTO ' + dtype + ' VALUES(?,?,?)' #insert credentials of new user to the database
+        sql = 'INSERT INTO ' + dtype + ' (uid, pwd, uname) VALUES(?,?,?)' #insert credentials of new user to the database
         pstmt = ibm_db.prepare(connection, sql)
         ibm_db.bind_param(pstmt, 1, uid)
         ibm_db.bind_param(pstmt, 2, pwd)
@@ -110,7 +110,7 @@ def regform():
             response = sg.client.mail.send.post(request_body = email_json)  #send email by invoking an HTTP/POST request to /mail/send
         
         else:   #if user registered with phone number
-           
+            
             flash(
                 Markup(
                     '''<div class="d-flex flex-column">
@@ -133,7 +133,7 @@ def regform():
 
 @app.route('/signin')
 def signin():
-    if session:   #inform user if they're already signed in the same session
+    if 'UID' in session:   #inform user if they're already signed in the same session
         flash('You are already signed in! Sign out to login with a different account')
         return redirect(url_for('dashboard'))
     return render_template('signin.html')   #take user to the sign in page
@@ -189,6 +189,7 @@ def medform():
 
 
     try:
+        #Upload donor's medical certificate to object storage
         part_size = 1024 * 1024 * 5
         file_threshold = 1024 * 1024 * 15
         
@@ -197,13 +198,14 @@ def medform():
             multipart_chunksize = part_size
         )
 
-        cos.Object(bucket_name, "MedCert_"+uid).upload_fileobj(
+        cos.Object(bucket_name, "MedCert_" + uid + '.' +  medfile.filename.split('.')[1]).upload_fileobj(
             Fileobj = medfile,
             Config = transfer_config
         )
 
-        flash(f"MedCert_{uid}File uploaded successfully")
-        medfile_url = "https://getplasma-pvt.s3.jp-tok.cloud-object-storage.appdomain.cloud/MedCert_"+uid
+        flash("Medical Certificate File uploaded successfully")
+        #public URL of the uploaded certificate file
+        medfile_url = "https://getplasma-pvt.s3.jp-tok.cloud-object-storage.appdomain.cloud/MedCert_" + uid + '.' +medfile.filename.split('.')[1]
 
     except ClientError as e:
          flash("Error occured while trying to upload medical certificate")
@@ -214,7 +216,7 @@ def medform():
 
 
 
-
+    #update user's medical and contact details
     sql = f"UPDATE {dtype} SET uname=?, uage=?, gender=?, weight=?, bgroup=?, rh=?, {'medfile=?, ' if dtype == 'Donor' else ''}addr=?, city=?, st=?, zip=? WHERE uid=?"
     pstmt = ibm_db.prepare(connection, sql)
     if dtype=='Donor':
@@ -223,7 +225,7 @@ def medform():
         param = uname, uage, gender, weight, bgroup, rh, addr, city, st, zip, uid
     ibm_db.execute(pstmt, param)
 
-    sql = 'SELECT * from ' + dtype + ' WHERE uid=?'   #check if user is already registered
+    sql = 'SELECT * from ' + dtype + ' WHERE uid=?'
     pstmt = ibm_db.prepare(connection, sql)
     ibm_db.bind_param(pstmt, 1, uid)
     ibm_db.execute(pstmt)
@@ -238,3 +240,17 @@ def medform():
         flash('Error occured while trying to update the profile')
 
     return redirect(url_for('dashboard'))
+
+
+@app.route('/donors')
+def donors():
+    sql = 'SELECT uid, uname, uage, gender, weight, bgroup, rh, medfile, addr, city, st, zip from DONOR'
+    stmt = ibm_db.exec_immediate(connection, sql)
+    
+    donor_list = {}
+    i=0
+    while (res:=ibm_db.fetch_assoc(stmt)) != False:
+        donor_list[i] = res
+        i+=1
+
+    return render_template('donors.html', donors = donor_list)
