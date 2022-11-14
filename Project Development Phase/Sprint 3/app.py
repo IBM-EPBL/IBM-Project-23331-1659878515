@@ -4,7 +4,7 @@ import ibm_boto3
 from ibm_botocore.client import Config, ClientError
 import sendgrid #Email API
 import os
-import json
+import json, re
 from dotenv import load_dotenv  #API that exposes environmental variables into the program
 from sendgrid.helpers.mail import Mail, Email, To, Content  #Additional Email Helper Classes
 from twilio.rest import Client  #SMS/WhatsApp API
@@ -120,7 +120,7 @@ def regform():
                                 <div class="text-start me-3">Please join our WhatsApp Chat to receive alerts by clicking the button below or just scan the QR Code</div>
                                 <img class="rounded" width="50%" src="https://plasma-donor.s3.jp-tok.cloud-object-storage.appdomain.cloud/WhatsAppQR.png"/>
                             </div>
-                            <a class="btn btn-primary btn-sm" target="_blank" href="https://wa.me/14155238886?text=join%20did-take">Join</a>
+                            <a class="btn btn-light btn-sm" target="_blank" href="https://wa.me/14155238886?text=join%20did-take">Join</a>
                         </div>'''
                 )
             )
@@ -258,36 +258,56 @@ def donors():
     return render_template('donors.html', donors = donor_list)
 
 
+
 @app.route('/processRequestPlasma/<string:userinfo>', methods=['POST'])     #alert donors upon request
 def processRequestPlasma(userinfo):
     donor_det = json.loads(userinfo)
-    to_email = To(donor_det['uid'])   #set user as the selected donor
-    subject = "IMPORTANT - Plasma Required"
-    #send the details of the requested patient to 
-    content = Content(
-                "text/html", 
-                f'''<p>Hello, {donor_det['uname']}</p>
-                    <p>One of our users need your help now!</p>
-                    <p>Mx.{session['UNAME']} has requested you to donate your plasma to them. We've hereby provided their medical and contact details for your reference.<p> 
-                    <p>Name         : {session['UNAME']}</p>
-                    <p>Age          : {session['UAGE']}</p>
-                    <p>Gender       : {session['GENDER']}</p>
-                    <p>Blood Group  : {session['BGROUP'] + session['RH']}</p>
-                    <p>Weight       : {session['WEIGHT']} kg</p>
-                    <p>Address : </p>
-                    <p>{session['ADDR']} <br> {session['CITY']} <br> {session['ST']} - {session['ZIP']}</p>
-                    <br><br><br>
-                    <p>Click <a href=\"{'mailto:' if session['UTYPE'] == 'email' else 'tel:+91'}{donor_det['uid']}\">here</a> to contact them</p>
-                    <br><br>
-                    <p>Hope you use this opportunity to save someone's life</p>
-                    <br><br>
-                    <p>Regards,<br>Team GetPlasma</p>''')
+    if re.fullmatch('[0-9]{10}', donor_det['uid']): #if donor is registered with phone number
+        message = client.messages.create(
+                from_='whatsapp:'+sender_phone,
+                body= f'''Hello, {donor_det['uname']}
+\nOne of our users need your help now! Mx.{session['UNAME']} has requested you to donate your plasma to them. We've hereby provided their medical and contact details for your reference.\n\n
+Name         : {session['UNAME']}\n
+Age          : {session['UAGE']}\n
+Gender       : {session['GENDER']}\n
+Blood Group  : {session['BGROUP'] + session['RH']}\n
+Weight       : {session['WEIGHT']} kg\n
+Address :\n
+{session['ADDR']}\n{session['CITY']}\n{session['ST']} - {session['ZIP']}
+You can contact them here: {session['UID']}\n\n
+Hope you use this opportunity to save someone's life.\n\n
+Regards,\nTeam GetPlasma''',
+        to='whatsapp:+91'+donor_det['uid']
+)
     
+    
+    else:   #if donor is registered with email
+        to_email = To(donor_det['uid'])   #set recipient as the selected donor
+        subject = "IMPORTANT - Plasma Required"
+        #send the details of the requested patient to 
+        content = Content(
+                    "text/html", 
+                    f'''<p>Hello, {donor_det['uname']}</p>
+                        <p>One of our users need your help now!</p>
+                        <p>Mx.{session['UNAME']} has requested you to donate your plasma to them. We've hereby provided their medical and contact details for your reference.<p> 
+                        <p>Name         : {session['UNAME']}</p>
+                        <p>Age          : {session['UAGE']}</p>
+                        <p>Gender       : {session['GENDER']}</p>
+                        <p>Blood Group  : {session['BGROUP'] + session['RH']}</p>
+                        <p>Weight       : {session['WEIGHT']} kg</p>
+                        <p>Address : </p>
+                        <p>{session['ADDR']} <br> {session['CITY']} <br> {session['ST']} - {session['ZIP']}</p>
+                        <br><br><br>
+                        <p>Click <a href=\"{'mailto:' if session['UTYPE'] == 'email' else 'tel:+91'}{session['UID']}\">here</a> to contact them</p>
+                        <br><br>
+                        <p>Hope you use this opportunity to save someone's life</p>
+                        <br><br>
+                        <p>Regards,<br>Team GetPlasma</p>''')
+        
 
-    email = Mail(from_email, to_email, subject, content) #construct email format
-    email_json = email.get()    #get JSON-ready representation of the mail object
+        email = Mail(from_email, to_email, subject, content) #construct email format
+        email_json = email.get()    #get JSON-ready representation of the mail object
 
-    response = sg.client.mail.send.post(request_body = email_json)  #send email by invoking an HTTP/POST request to /mail/send
-    if response:
-        flash('We sent an alert message to the donor'+donor_det['uname']+'with your details!')
+        response = sg.client.mail.send.post(request_body = email_json)  #send email by invoking an HTTP/POST request to /mail/send
+
     return('/')

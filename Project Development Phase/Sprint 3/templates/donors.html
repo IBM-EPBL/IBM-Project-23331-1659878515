@@ -94,8 +94,7 @@
               </p>
             </div>
             <button type="button" id="reqbtn-{{key}}" class="btn btn-dark text-white custom-primary btn-sm w-100" >
-              <i class="fa-solid fa-message"></i> Request
-            </button>
+              <i class="fa-solid fa-message"></i> Request</button>
           </div>
         </div>
       </div>
@@ -122,10 +121,10 @@
     })
   });
 
-  let uname_list = [], uid_list =[];
+  let uname_list = [], uid_list =[], reqbtn = [];
   for(let i=0; i<'{{loop_len}}'; i++){
-    console.log(i)
-    document.getElementById('reqbtn-'+i).addEventListener('click', function(){
+    reqbtn[i] = document.getElementById('reqbtn-'+i)
+    reqbtn[i].addEventListener('click', function(){
       callRequest(i);
     })
     uname_list.push(document.getElementById('uname-'+i));
@@ -137,6 +136,8 @@
     const req = new XMLHttpRequest()
     req.open('POST', `/processRequestPlasma/${JSON.stringify({"uname": username, "uid" : userid})}`);
     req.send();
+    reqbtn[i].setAttribute('disabled', 'true');
+    reqbtn[i].innerHTML +="ed";
   }
 
 
