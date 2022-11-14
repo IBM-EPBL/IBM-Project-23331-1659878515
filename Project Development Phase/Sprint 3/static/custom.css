@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+
+:root{
+    --pri: #4158D0;
+    --sec: #C850C0;
+    --ter: #FFCC70;
+}
+
+.text-custom-accent{
+    color: #E57373;
+}
+
+.text-custom-primary{
+    color: var(--pri);
+}
+
+.text-custom-primary-light{
+    color: #798CE8;
+}
+
+.text-custom-secondary{
+    color: var(--sec)
+}
+
+.text-custom-tertiary{
+    color: var(--ter)
+}
+
+.custom-primary{
+    background-color: var(--pri);
+}
+
+.custom-primary-light{
+    background-color: #798CE8;
+}
+
+.custom-secondary{
+    background-color: var(--sec)
+}
+
+.custom-secondary-bg{
+    background-color: #f48ded65;
+}
+
+.custom-tertiary{
+    background-color: var(--ter)
+}
+
+.custom-accent{
+    background-color: #E57373;
+}
+
+body{
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
+}
+
+.main-bg{
+    background-color: #4158D0;
+    background-image: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
+}
+
+.main-bg-medium{
+    background-color: #667be2;
+    background-image: linear-gradient(43deg, #8294ef 0%, #ed85e6 46%, #ffdfa4 100%);
+}
+
+.main-bg-light{
+    background-color: #798CE8;
+    background-image: linear-gradient(43deg, #dfe5ff 0%, #ffeffe 46%, #fff2e1 100%);
+}
+
+.rounded-rem{
+    border-radius: 1rem;
+}
+
+.nav-link:hover{
+    color: var(--sec);
+}
+
+
+.glass{
+    backdrop-filter: blur(10px);
+    background: #ffffff88;
+}
+
+.glass-white{
+    background: #ffffffaa;
+}
+
+.glass:disabled{
+    background: #dddddd88;
+}
+
+.glass, .glass-white, .glass:disabled{
+    backdrop-filter: blur(10px);
+}
