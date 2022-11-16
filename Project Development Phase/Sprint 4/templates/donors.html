@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>GetPlasma - Donors</title>
+<link rel="stylesheet" href="{{url_for('static', filename='css/donorPageStyle.css')}}"/>
+{% endblock %}
+
+
+{% block body %}
+<div class="modal modal-fullscreen fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalLabel">Donor's Medical Certificate</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex align-items-center justify-content-center">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<section class="vh-200 main-bg-light">
+    <div class="container pt-5">
+
+
+        <div class="mb-5 text-center">
+            <i class="fa-solid fa-hand-holding-droplet fa-2x me-3 text-custom-accent"></i>
+            <span class="h2 fw-bold mb-0">Donors List</span>
+        </div>
+        
+
+        <div class="container col-lg-12 my-5 pt-3 rounded-4 border glass-white shadow-sm d-flex flex-column align-items-center">
+            <div class="col-12 text-center text-nowrap fw-bold"><i class="fa-solid fa-droplet text-custom-accent me-2 mb-3"></i>Filter by Blood Group</div>
+
+            <div class="col-12 col-sm-12 col-md-6 donor-bg-select text-center row py-3 px-4 align-self-start align-self-sm-start align-self-md-auto">
+                <div class="form-check col">
+                    <input class="form-check-input custom-switch" type="radio" name="bg-radio" value="allgroup" checked>
+                    <label class="form-check-label text-nowrap" for="allgroup">All Blood Groups</label>
+                </div>
+                <div class="form-check col">
+                    <input class="form-check-input custom-switch" type="radio" name="bg-radio" value="matchgroup">
+                    <label class="form-check-label text-nowrap" for="matchgroup">Matching Blood Groups</label>
+                </div>
+            </div>
+
+            <div id="bgfilter" class="row py-3 px-4 col-12">
+                <div class="form-check form-switch col d-flex justify-content-around d-flex justify-content-around">
+                    <input class="form-check-input custom-switch" type="checkbox" name="opve" value="O +ve" checked>
+                    <label class="form-check-label text-nowrap" for="opve">O +ve</label>
+                </div>
+                <div class="form-check form-switch col d-flex justify-content-around">
+                    <input class="form-check-input custom-switch" type="checkbox" name="apve" value="A +ve" checked>
+                    <label class="form-check-label text-nowrap" for="opve">A +ve</label>
+                </div>
+                <div class="form-check form-switch col d-flex justify-content-around">
+                    <input class="form-check-input custom-switch" type="checkbox" name="bpve" value="B +ve" checked>
+                    <label class="form-check-label text-nowrap" for="opve">B +ve</label>
+                </div>
+                <div class="form-check form-switch col d-flex justify-content-around">
+                    <input class="form-check-input custom-switch" type="checkbox" name="abpve" value="AB +ve" checked>
+                    <label class="form-check-label text-nowrap" for="opve">AB +ve</label>
+                </div>
+                <div class="form-check form-switch col d-flex justify-content-around">
+                    <input class="form-check-input custom-switch" type="checkbox" name="onve" value="O -ve" checked>
+                    <label class="form-check-label text-nowrap" for="opve">O -ve</label>
+                </div>
+                <div class="form-check form-switch col d-flex justify-content-around">
+                    <input class="form-check-input custom-switch" type="checkbox" name="anve" value="A -ve" checked>
+                    <label class="form-check-label text-nowrap" for="opve">A -ve</label>
+                </div>
+                <div class="form-check form-switch col d-flex justify-content-around">
+                    <input class="form-check-input custom-switch" type="checkbox" name="bnve" value="B -ve" checked>
+                    <label class="form-check-label text-nowrap" for="opve">B -ve</label>
+                </div>
+                <div class="form-check form-switch col d-flex justify-content-around">
+                    <input class="form-check-input custom-switch" type="checkbox" name="abnve" value="AB -ve" checked>
+                    <label class="form-check-label text-nowrap" for="opve">AB -ve</label>
+                </div>
+            </div>
+        </div>
+
+
+        
+        {% set loop_len = donors|length %}
+        <div class="extVars">
+            <div>{{loop_len}}</div>
+            <div>{{session.BGROUP}}</div>
+        </div>
+
+        <div class="row">
+            {% for key, value in donors.items() %}
+            <div class="col-xl-3 col-sm-6 donor-card">
+                <div class="card glass mb-4">
+                    <div class="card-body">
+                        <div>
+                            <h5 id="uname-{{key}}" class="font-size-16 mb-1 text-dark fw-semibold">{{ value['UNAME'] }}</h5>
+                            <span id="uid-{{key}}" class="badge custom-secondary-bg text-custom-secondary mb-0">{{ value['UID'] }}</span>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-muted mb-4 bgroup">
+                                <i class="fa-solid fa-hand-holding-droplet text-custom-accent me-2"></i>
+                                <span>{{value['BGROUP']}} {{value['RH']}}</span>
+                            </p>
+                            <p class="text-muted mb-4">
+                                <i class="fa-solid fa-person-half-dress text-custom-accent me-2"></i>
+                                {{value['GENDER']}}
+                            </p>
+                            <p class="text-muted mb-4">
+                                <i class="fa-solid fa-weight text-custom-accent me-2"></i>
+                                {{value['WEIGHT']}} kg
+                            </p>
+                            <p class="link text-muted mb-4">
+                                <i class="fa-solid fa-notes-medical text-custom-accent me-2"></i>
+                                <a href="#modal" data-id="{{value['MEDFILE']}}" data-bs-toggle="modal"
+                                    class="text-muted show-medcert">View Medical Certificate</a>
+                            </p>
+                            <p class="text-muted mb-4 city-state">
+                                <i class="fa-solid fa-map-location-dot text-custom-accent me-2"></i>
+                                <span class="city">{{value['CITY']}}</span>, <span class="state">{{value['ST']}}</span>
+                            </p>
+                        </div>
+                        <button type="button" id="reqbtn-{{key}}"
+                            class="btn btn-dark text-white custom-primary btn-sm w-100">
+                            <i class="fa-solid fa-message"></i> Request</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<script src="{{url_for('static', filename='javascript/donorPageHandler.js')}}"></script>
+{% endblock %}
+</body>
+
+</html>

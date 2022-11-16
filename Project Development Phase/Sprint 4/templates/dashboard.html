@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>GetPlasma - Dashboard</title>
+{% endblock %}
+
+
+{% block body %}
+<section class="vh-200 main-bg-light">
+    <div class="container py-5 h-100">
+        <div class="d-flex justify-content-center align-items-center">
+            <div class="text-black">
+
+
+                <div class="mb-5 text-center">
+                    <i class="fa-solid fa-user-plus fa-2x me-3 text-custom-primary-light"></i>
+                    <span class="h2 fw-bold mb-0">{{session.DTYPE}} Profile</span>
+                </div>
+
+                <form action="{{url_for('medform')}}" method="POST" class="row g-3" name="medform" enctype="multipart/form-data">
+                    <div class="form-outline mb-4 col-md-6">
+                        <label class="form-label" for="uname">
+                            <i class="fa-solid fa-user-tag me-3 text-custom-accent text-custom-accent"></i>Username</label>
+                        <input type="text" name="uname" class="form-control form-control-md glass" required
+                            value="{{session.UNAME}}" />
+                    </div>
+
+                    <div class="form-outline mb-4 col-md-6">
+                        <label class="form-label" for="uid">
+                            <i class="fa-solid fa-address-card me-3 text-custom-accent"></i>User ID</label>
+                        <input type="text" name="uid" class="form-control form-control-md glass" required
+                            value="{{session.UID}}" readonly/>
+                    </div>
+
+                    <div class="form-outline mb-4 col-md-6">
+                        <label class="form-label" for="uage">
+                            <i class="fa-solid fa-calendar-days me-3 text-custom-accent"></i>Age</label>
+                        <input type="number"
+                            {% if session.DTYPE=="Donor" %} 
+                                min="18" max="65" 
+                            {% else %}
+                                min="0" max="120"
+                            {%endif%}
+                            name="uage" class="form-control form-control-md glass" placeholder="Enter Age"
+                            required value="{{session.UAGE}}" />
+                    </div>
+
+
+                    <div class="form-outline mb-4 col-md-6">
+                        <label class="form-label" for="gender">
+                            <i class="fa-solid fa-person-half-dress me-3 text-custom-accent  glass"></i>Gender</label>
+                        <select class="form-select glass" name="gender" aria-placeholder="Select Gender" required>
+                            <option value="..." hidden selected>...</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Transgender">Transgender</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-outline mb-4 col-md-6">
+                        <label class="form-label" for="weight">
+                            <i class="fa-solid fa-address-card me-3 text-custom-accent"></i>Weight</label>
+                        <input type="number" 
+                            {% if session.DTYPE=="Donor" %} 
+                                min="45" 
+                            {% else %}
+                                min="0"
+                            {%endif%}
+                            name="weight" class="form-control form-control-md glass" required
+                                value="{{session.WEIGHT}}" />
+                    </div>
+
+
+                    <div class="form-outline mb-4 col-md-6">
+                        <label class="form-label" for="bgroup">
+                            <i class="fa-solid fa-droplet me-3 text-custom-accent"></i>Blood Group</label>
+                        <div class="input-group">
+                            <select class="form-select glass" name="bgroup" aria-placeholder="Select Blood Group" required>
+                                <option value="..." hidden selected>...</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="AB">AB</option>
+                                <option value="O">O</option>
+                            </select>
+                            <select class="form-select glass" name="rh" aria-placeholder="Select Rh Factor" required>
+                                <option value="..." hidden selected>...</option>
+                                <option value="+ve">+ve</option>
+                                <option value="-ve">-ve</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    {% if session.DTYPE == 'Donor' %} {# Medical Certificate is required only for donors #}
+
+                        <div class="form-outline mb-4 col-12">
+                            <label class="form-label col-12">
+                                <i class="fa-solid fa-notes-medical me-3 text-custom-accent"></i>Medical Fitness Certificate</label>
+
+                            {% if not session.MEDFILE %}
+                                <!--medical certificate not yet uploaded-->
+                            {% elif '.pdf' in session.MEDFILE %}
+                            <div class="d-flex w-100 justify-content-center col-lg-3 col-sm-12 mb-4">
+                                <iframe src="{{session.MEDFILE}}" class="shadow rounded-5 main-bg p-1 col-6"></iframe>
+                            </div>
+                            {% else %}
+                                <div class="d-flex w-100 justify-content-center col-lg-3 col-sm-12 mb-4">
+                                    <img src="{{session.MEDFILE}}" class="shadow rounded-5 main-bg p-1 w-50"/>
+                                </div>
+                            {% endif %}
+
+                            <input class="form-control glass" placeholder="Upload medical certificate" type="file" name="medfile" id="medfile" accept=".pdf, image/*" required>
+                            
+                        </div>
+
+                    {% endif %}
+
+
+                    <div class="form-outline mb-4 col-12">
+                        <label for="addr">
+                            <i class="fa-solid fa-location-dot me-3 text-custom-accent"></i>Address</label>
+                        <textarea class="form-control address glass" name="addr" 
+                            rows="4" placeholder="Enter Address" required>{{session.ADDR}}</textarea>
+                    </div>
+
+                    <div class="form-outline mb-4 col-md-4">
+                        <label for="st" class="form-label">
+                            <i class="fa-solid fa-map-location-dot me-3 text-custom-accent"></i>State</label>
+                        <select name="st" id="st" class="form-select glass" required>
+                            <option value="..." hidden selected>...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-outline mb-4 col-md-4">
+                        <label for="city" class="form-label">
+                            <i class="fa-solid fa-tree-city me-3 text-custom-accent"></i>City</label>
+                        <select name="city" id="city" class="form-select glass" required>
+                            <option value="..." hidden selected>...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-outline mb-4 col-md-4">
+                        <label for="zip" class="form-label">
+                            <i class="fa-solid fa-signs-post me-3 text-custom-accent"></i>ZIP Code</label>
+                        <input name="zip" type="number" min="100000" max="999999" 
+                            value="{{session.ZIP}}" class="form-control glass" placeholder="Enter Postal Code" required>
+                    </div>
+
+                    <div class="w-100 d-flex align-items-center justify-content-center mb-5 col-md-6">
+                        <button class="btn btn-dark custom-primary text-white btn-lg btn-block btn-rounded" type="submit">
+                            Update
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    let fnames = ['{{session.GENDER}}', '{{session.BGROUP}}', '{{session.RH}}'];
+    let def_names = ['{{session.ST}}', '{{session.CITY}}'];
+</script>
+<script src="{{url_for('static', filename='javascript/dashboardHandler.js')}}"></script>
+
+{% endblock %}
+</body>
+
+</html>
