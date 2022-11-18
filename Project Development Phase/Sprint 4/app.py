@@ -244,10 +244,10 @@ def medform():
     return redirect(url_for('dashboard'))
 
 
-@app.route('/donors')
+@app.route('/donors')   #populate donor page
 def donors():
     sql = 'SELECT uid, uname, uage, gender, weight, bgroup, rh, medfile, addr, city, st, zip from DONOR'
-    stmt = ibm_db.exec_immediate(connection, sql)
+    stmt = ibm_db.exec_immediate(connection, sql)   #fetch donor data from the database
     
     donor_list = {}
     i=0
@@ -313,3 +313,6 @@ Regards,\nTeam GetPlasma''',
         print(response)
 
     return('/')
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
